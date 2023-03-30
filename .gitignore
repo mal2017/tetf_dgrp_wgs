@@ -1,0 +1,11 @@
+.snakemake/
+results/
+*bam
+*sam
+*tmp*
+*TMP*
+*tmp
+tmp*
+TMP*
+*TMP
+*~

@@ -1,0 +1,30 @@
+import sys
+import peppy
+import glob
+
+configfile: "config/config.yaml"
+pepfile: config.get("PEP")
+
+SAMPLES = [x.sample_name for x in pep.samples]
+SAMPLES = SAMPLES if config.get("RUN_TYPE") != "test" else [x.sample_name for x in pep.samples if list(set(x.Strain))[0] in ['DGRP_100','DGRP_101']]
+
+SUBSAMPLE_TABLE = pep.subsample_table
+SUBSAMPLE_TABLE = pep.subsample_table.loc[[x in SAMPLES for x in pep.subsample_table['sample_name']]]
+
+ruleorder: concat_pe_runs > concat_runs > fasterq_dump
+
+subworkflow refs_wf:
+    workdir:
+        "../../tetf_refs/"
+    snakefile:
+        "../../tetf_refs/workflow/Snakefile"
+
+include: "rules/utils.smk"
+include: "rules/download.smk"
+include: "rules/trim.smk"
+include: "rules/align.smk"
+include: "rules/copies.smk"
+
+rule all:
+    input:
+        "results/copies/copies.tsv"
