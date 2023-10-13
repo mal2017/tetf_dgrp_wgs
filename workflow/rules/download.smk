@@ -12,6 +12,7 @@ rule fasterq_dump:
         mem=config.get("FASTERQDUMP_MEM","8000"),
         cpus=1
     priority: 1
+    retries: 4
     conda:
         "../envs/sratools.yaml"
     shell:
